@@ -3,11 +3,14 @@ import cv2
 from track_detection import ObjectTracker
 
 
-IMAGES_PATH = "../ADL-Rundle-6/img1/"
+IMAGES_PATH = "/home/yoku/scia/object_visual_tracking/ADL-Rundle-6/img1"
 TOTAL_FRAMES = 500
-SIGMA_IOU = 0.5
+SIGMA_IOU = 0.4
 
-object_tracker = ObjectTracker("../ADL-Rundle-6/det/det.txt", sigma_iou=SIGMA_IOU)
+object_tracker = ObjectTracker(
+    "/home/yoku/scia/object_visual_tracking/ADL-Rundle-6/det/det.txt",
+    sigma_iou=SIGMA_IOU,
+)
 
 
 def draw_tracking_results(frame_obj, track_objs: dict):
@@ -27,7 +30,7 @@ def draw_tracking_results(frame_obj, track_objs: dict):
         )
         cv2.putText(
             frame,
-            f"ID: {track_id}",
+            f"ID: {track_id + 1}",
             (int(track["bbox"][0]), int(track["bbox"][1]) - 10),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.6,

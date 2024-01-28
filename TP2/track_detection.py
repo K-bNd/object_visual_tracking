@@ -3,11 +3,11 @@ import numpy as np
 
 class ObjectTracker:
     """
-    Class to perform object tracker
+    Class to perform object tracking
     """
 
     def __init__(self, filename, sigma_iou=0.5) -> None:
-        self.object_id = 1
+        self.object_id = 0
         self.tracks = {}
         self.sigma_iou = sigma_iou
         self.detections = np.loadtxt(filename, delimiter=",", usecols=range(10))
@@ -43,12 +43,13 @@ class ObjectTracker:
         matched_detections = set()
         for _, track in self.tracks.items():
             ious = np.apply_along_axis(self.__get_iou(track["bbox"]), 1, detections)
-            if ious.max() == 0:
+            best_index = ious.argmax()
+            if ious.max() == 0 or best_index in matched_detections:
                 track["last_updated"] = -1
                 continue
-            track["bbox"] = detections[ious.argmax()][2:6]
+            track["bbox"] = detections[best_index][2:6]
             track["last_updated"] = frame_number
-            matched_detections.add(ious.argmax())
+            matched_detections.add(best_index)
 
         # delete unmatch tracks
         self.tracks = dict(
@@ -60,7 +61,7 @@ class ObjectTracker:
 
         # create new tracks
         for idx, detection in enumerate(detections):
-            if idx not in matched_detections:
+            if not (idx in matched_detections):
                 self.tracks[self.object_id] = {
                     "bbox": detection[2:6],
                     "last_updated": frame_number,
