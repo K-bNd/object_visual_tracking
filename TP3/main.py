@@ -1,13 +1,13 @@
 import os
 import cv2
-from track_detection import ObjectTracker
+from hungarian_tracker import HungarianObjectTracker
 
 
 IMAGES_PATH = "/home/yoku/scia/object_visual_tracking/ADL-Rundle-6/img1"
 TOTAL_FRAMES = 525
 SIGMA_IOU = 0.4
 
-object_tracker = ObjectTracker(
+object_tracker = HungarianObjectTracker(
     "/home/yoku/scia/object_visual_tracking/ADL-Rundle-6/det/det.txt",
     sigma_iou=SIGMA_IOU,
 )
