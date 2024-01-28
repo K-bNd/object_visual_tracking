@@ -1,22 +1,20 @@
 import os
 import cv2
-from track_detection import load_detection_file, track_detection
+from track_detection import ObjectTracker
 
-
-detections = load_detection_file("../ADL-Rundle-6/det/det.txt")
-print(detections)
-tracks = []
 
 IMAGES_PATH = "../ADL-Rundle-6/img1/"
 TOTAL_FRAMES = 500
 SIGMA_IOU = 0.5
 
+object_tracker = ObjectTracker("../ADL-Rundle-6/det/det.txt", sigma_iou=SIGMA_IOU)
 
-def draw_tracking_results(frame_obj, track_objs: list):
+
+def draw_tracking_results(frame_obj, track_objs: dict):
     """
     Draw tracking results
     """
-    for track in track_objs:
+    for track_id, track in track_objs.items():
         cv2.rectangle(
             frame_obj,
             (int(track["bbox"][0]), int(track["bbox"][1])),
@@ -29,7 +27,7 @@ def draw_tracking_results(frame_obj, track_objs: list):
         )
         cv2.putText(
             frame,
-            f"ID: {track['track_id']}",
+            f"ID: {track_id}",
             (int(track["bbox"][0]), int(track["bbox"][1]) - 10),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.6,
@@ -45,11 +43,7 @@ for frame_number in range(1, TOTAL_FRAMES + 1):
     if frame is None:
         break
 
-    current_frame_detections = detections[detections[:, 0] == frame_number]
-    tracks = track_detection(
-        current_frame_detections, tracks, frame_number, sigma_iou=SIGMA_IOU
-    )
-
+    tracks = object_tracker.track_detection(frame_number)
     frame = draw_tracking_results(frame, tracks)
 
     cv2.imshow("Tracking", frame)
