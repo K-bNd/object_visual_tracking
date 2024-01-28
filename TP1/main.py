@@ -20,7 +20,8 @@ def read_video_feed_and_get_contours(filename):
             center_x, center_y = tuple(center.astype(int).ravel())
             state_matrix = kalman_filter.predict()
             kalman_filter.update(center_x, center_y)
-            predicted_x, predicted_y = tuple(state_matrix.astype(int).ravel())
+            coord = state_matrix.astype(int)[:2].ravel()
+            print(coord.shape, coord)
             cv2.circle(frame, (center_x, center_y), 5, (0, 255, 0), -1)
             cv2.rectangle(frame, (predicted_x, predicted_y), 5, (0, 0, 255), -1)
 
@@ -34,4 +35,4 @@ def read_video_feed_and_get_contours(filename):
 
 
 if __name__ == "__main__":
-    read_video_feed_and_get_contours("randomball.avi")
+    read_video_feed_and_get_contours("/home/yoku/scia/object_visual_tracking/TP1/randomball.avi")
