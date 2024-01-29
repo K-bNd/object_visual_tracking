@@ -11,6 +11,17 @@ object_tracker = HungarianObjectTracker(
     "../ADL-Rundle-6/det/det.txt",
     sigma_iou=SIGMA_IOU,
 )
+all_tracking_data = {}
+
+
+def save_tracking_results(tracking_data, sequence_name):
+    """Save tracking results"""
+    with open(f"{sequence_name}.txt", "w", encoding="utf-8") as f_out:
+        for current_frame_number, frame_tracks in tracking_data.items():
+            for track_id, track in frame_tracks.items():
+                bbox = track["bbox"]
+                line = f"{current_frame_number},{track_id},{int(bbox[0])},{int(bbox[1])},{int(bbox[2])},{int(bbox[3])},1,-1,-1,-1\n"
+                f_out.write(line)
 
 
 def draw_tracking_results(frame_obj, track_objs: dict):
@@ -47,10 +58,13 @@ for frame_number in range(1, TOTAL_FRAMES + 1):
         break
 
     tracks = object_tracker.track_detection(frame_number)
+    all_tracking_data[frame_number] = tracks
     frame = draw_tracking_results(frame, tracks)
 
     cv2.imshow("Tracking", frame)
     if cv2.waitKey(1) & 0xFF == 27:
         break
 
+
 cv2.destroyAllWindows()
+save_tracking_results(all_tracking_data, "ADL-Rundle-6")

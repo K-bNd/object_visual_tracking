@@ -15,6 +15,19 @@ object_tracker = NNMOT(
 )
 
 
+all_tracking_data = {}
+
+
+def save_tracking_results(tracking_data, sequence_name):
+    """Save tracking results"""
+    with open(f"{sequence_name}.txt", "w", encoding="utf-8") as f_out:
+        for current_frame_number, frame_tracks in tracking_data.items():
+            for track_id, track in frame_tracks.items():
+                bbox = track["bbox"]
+                line = f"{current_frame_number},{track_id},{int(bbox[0])},{int(bbox[1])},{int(bbox[2])},{int(bbox[3])},1,-1,-1,-1\n"
+                f_out.write(line)
+
+
 def draw_tracking_results(frame_obj, track_objs: dict):
     """
     Draw tracking results
@@ -49,6 +62,7 @@ for frame_number in range(1, TOTAL_FRAMES + 1):
         break
 
     tracks = object_tracker.track_detection(Image.fromarray(frame), frame_number)
+    all_tracking_data[frame_number] = tracks
     frame = draw_tracking_results(frame, tracks)
 
     cv2.imshow("Tracking", frame)
@@ -56,3 +70,4 @@ for frame_number in range(1, TOTAL_FRAMES + 1):
         break
 
 cv2.destroyAllWindows()
+save_tracking_results(all_tracking_data, "ADL-Rundle-6")
