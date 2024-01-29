@@ -3,12 +3,12 @@ import cv2
 from kalman_tracker import MOTwithKalmanFilter
 
 
-IMAGES_PATH = "/home/yoku/scia/object_visual_tracking/ADL-Rundle-6/img1"
+IMAGES_PATH = "../ADL-Rundle-6/img1"
 TOTAL_FRAMES = 525
 SIGMA_IOU = 0.4
 
 object_tracker = MOTwithKalmanFilter(
-    "/home/yoku/scia/object_visual_tracking/ADL-Rundle-6/det/det.txt",
+    "../ADL-Rundle-6/det/det.txt",
     sigma_iou=SIGMA_IOU,
 )
 

@@ -3,12 +3,12 @@ import cv2
 from hungarian_tracker import HungarianObjectTracker
 
 
-IMAGES_PATH = "/home/yoku/scia/object_visual_tracking/ADL-Rundle-6/img1"
+IMAGES_PATH = "../ADL-Rundle-6/img1"
 TOTAL_FRAMES = 525
 SIGMA_IOU = 0.4
 
 object_tracker = HungarianObjectTracker(
-    "/home/yoku/scia/object_visual_tracking/ADL-Rundle-6/det/det.txt",
+    "../ADL-Rundle-6/det/det.txt",
     sigma_iou=SIGMA_IOU,
 )
 

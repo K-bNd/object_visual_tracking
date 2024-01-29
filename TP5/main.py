@@ -1,15 +1,17 @@
 import os
 import cv2
-from track_detection import ObjectTracker
+from nn_tracker import NNMOT
+from PIL import Image
 
 
 IMAGES_PATH = "../ADL-Rundle-6/img1"
 TOTAL_FRAMES = 525
-SIGMA_IOU = 0.4
+IMAGE_SHAPE = (224, 224)
+EPS = 1.0
 
-object_tracker = ObjectTracker(
+object_tracker = NNMOT(
     "../ADL-Rundle-6/det/det.txt",
-    sigma_iou=SIGMA_IOU,
+    eps=EPS,
 )
 
 
@@ -46,7 +48,7 @@ for frame_number in range(1, TOTAL_FRAMES + 1):
     if frame is None:
         break
 
-    tracks = object_tracker.track_detection(frame_number)
+    tracks = object_tracker.track_detection(Image.fromarray(frame), frame_number)
     frame = draw_tracking_results(frame, tracks)
 
     cv2.imshow("Tracking", frame)

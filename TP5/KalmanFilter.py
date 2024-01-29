@@ -12,7 +12,7 @@ class KalmanFilter:
         self.std_acc = std_acc
         self.x_dt_meas = x_dt_meas
         self.y_dt_meas = y_dt_meas
-        self.stateMatrix = np.zeros((4, 1))
+        self.state_matrix = np.zeros((4, 1))
         self.A = np.matrix([[1, 0, dt, 0], [0, 1, 0, dt], [0, 0, 1, 0], [0, 0, 0, 1]])
         self.B = np.matrix([[(dt**2) / 2, 0], [0, (dt**2) / 2], [dt, 0], [0, dt]])
         self.H = np.matrix([[1, 0, 0, 0], [0, 1, 0, 0]])
@@ -35,9 +35,9 @@ class KalmanFilter:
         """
         Predict next state
         """
-        self.stateMatrix = np.dot(self.A, self.stateMatrix) + np.dot(self.B, self.u)
+        self.state_matrix = np.dot(self.A, self.state_matrix) + np.dot(self.B, self.u)
         self.P = np.dot(np.dot(self.A, self.P), self.A.T) + self.Q
-        return self.stateMatrix
+        return self.state_matrix
 
     def update(self, circle_x, circle_y):
         """
@@ -46,6 +46,6 @@ class KalmanFilter:
         z = np.matrix([[circle_x], [circle_y]])
         S = np.dot(np.dot(self.H, self.P), self.H.T) + self.R
         K = np.dot(np.dot(self.P, self.H.T), np.linalg.inv(S))
-        y = z - np.dot(self.H, self.stateMatrix)
-        self.stateMatrix = self.stateMatrix + np.dot(K, y)
+        y = z - np.dot(self.H, self.state_matrix)
+        self.state_matrix = self.state_matrix + np.dot(K, y)
         self.P = (np.eye(self.H.shape[1]) - (K * self.H)) * self.P
